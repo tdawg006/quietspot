@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuietSpot – Find a seat on campus</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">QuietSpot</div>
+      <div class="hdr-right">
+        <a href="connect.html" class="btn ghost small" title="Supabase connection settings">Database settings</a>
+        <span class="meta" id="who"></span>
+        <button class="btn ghost small" id="authBtn">Log in</button>
+        <button class="btn small" id="addSpaceBtn">+ Add space</button>
+        <button class="btn small" id="reportTop">Report a space</button>
+      </div>
+    </header>
+
+    <!-- Best match box: filled in by JavaScript -->
+    <section class="pick">
+      <small>Best match right now</small>
+      <h1 id="pickName">Looking…</h1>
+      <p id="pickInfo"></p>
+      <button class="btn" id="pickBtn" hidden>Update this space</button>
+    </section>
+
+    <div class="filters">
+      <input id="search" type="search" placeholder="Search spaces or buildings…" aria-label="Search spaces">
+      <select id="need" aria-label="What do you need?">
+        <option value="any">Any space</option>
+        <option value="silent">Total silence</option>
+        <option value="talk">Group discussion allowed</option>
+        <option value="outlets">Power outlets</option>
+      </select>
+      <select id="sort" aria-label="Sort">
+        <option value="smart">Smart recommended</option>
+        <option value="free">Most seats free</option>
+        <option value="fresh">Latest reports</option>
+        <option value="name">Name</option>
+      </select>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- Report form (a popup) -->
+  <dialog id="dlg">
+    <form id="form">
+      <h2>Report a space</h2>
+      <label for="rSpace">Where are you?</label>
+      <select id="rSpace"></select>
+      <label for="rOcc">How full is it?</label>
+      <select id="rOcc">
+        <option value="">Choose…</option>
+        <option value="10">Empty</option>
+        <option value="40">Plenty of seats</option>
+        <option value="75">Almost full</option>
+        <option value="100">No seats</option>
+      </select>
+      <label for="rNoise">How loud is it?</label>
+      <select id="rNoise">
+        <option value="0">Silent</option>
+        <option value="1">Low hum</option>
+        <option value="2">Loud</option>
+      </select>
+      <p class="err" id="err"></p>
+      <div class="acts">
+        <button type="button" class="btn ghost" id="cancel">Cancel</button>
+        <button class="btn">Send report</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Add a new campus space -->
+  <dialog id="spaceDlg">
+    <form id="spaceForm">
+      <h2>Add a campus space</h2>
+      <p class="meta">Share a real campus study spot. Your location is only captured if you choose to use it.</p>
+      <label for="sName">Space name</label><input id="sName" maxlength="90" required placeholder="e.g. Science Block reading area">
+      <label for="sBuilding">Building / landmark</label><input id="sBuilding" maxlength="90" required>
+      <label for="sDescription">How to find it</label><textarea id="sDescription" maxlength="500" rows="3" placeholder="Floor, entrance, nearby landmark…"></textarea>
+      <label for="sRule">Study environment</label><select id="sRule"><option value="silent">Quiet / silent</option><option value="talk">Group discussion allowed</option></select>
+      <label class="check"><input id="sOutlets" type="checkbox"> Power outlets available</label>
+      <label for="sCap">Approximate seats</label><input id="sCap" type="number" min="1" max="5000" value="20" required>
+      <label for="sLat">Latitude (optional)</label><input id="sLat" type="number" min="-90" max="90" step="any" placeholder="12.123456">
+      <label for="sLng">Longitude (optional)</label><input id="sLng" type="number" min="-180" max="180" step="any" placeholder="77.123456">
+      <button class="btn ghost small" type="button" id="getCoords">Use my current location</button>
+      <p class="meta" id="geoStatus">Coordinates should point to the study space, not your home.</p>
+      <label for="sPhotos">Photos (up to 5; JPG, PNG or WebP, max 5 MB each)</label>
+      <input id="sPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+      <p class="err" id="spaceErr" role="alert"></p>
+      <div class="acts"><button type="button" class="btn ghost" id="spaceCancel">Cancel</button><button class="btn" id="spaceSubmit">Add space</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="correctionDlg"><form id="correctionForm"><h2>Suggest a correction</h2>
+    <p class="meta">Suggestions are reviewed before changes are made to the public listing.</p>
+    <input type="hidden" id="correctionSpace">
+    <label for="correctionText">What should be corrected?</label>
+    <textarea id="correctionText" required minlength="10" maxlength="1000" rows="5" placeholder="Correct building, location, facilities, duplicate listing…"></textarea>
+    <p class="err" id="correctionErr" role="alert"></p>
+    <div class="acts"><button type="button" class="btn ghost" id="correctionCancel">Cancel</button><button class="btn">Send suggestion</button></div>
+  </form></dialog>
+  <!-- Login / sign-up popup -->
+  <dialog id="authDlg">
+    <form id="authForm">
+      <h2 id="authTitle">Log in</h2>
+      <label for="aEmail">Email</label>
+      <input id="aEmail" type="email" autocomplete="email" required>
+      <label for="aPass">Password (min 6 characters)</label>
+      <input id="aPass" type="password" autocomplete="current-password" minlength="6" required>
+      <p class="err" id="authErr"></p>
+      <div class="acts">
+        <button type="button" class="btn ghost" id="authCancel">Cancel</button>
+        <button class="btn" id="authSubmit">Log in</button>
+      </div>
+      <p class="meta center"><a href="#" id="authSwitch">New here? Create an account</a></p>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    if (window.QUIETSPOT_CONFIGURED) {
+      var appScript = document.createElement('script');
+      appScript.src = 'js/app.js';
+      document.body.appendChild(appScript);
+    } else {
+      window.location.replace('connect.html');
+    }
+  </script>
+</body>
+</html>

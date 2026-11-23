@@ -1,0 +1,69 @@
+/* Colours are stored as variables so they are easy to change */
+:root{--bg:#eef0f7;--card:#fff;--ink:#1b1f3b;--muted:#5e6385;--line:#d8dbea;--brand:#4f3fd6;--ok:#18865a;--mid:#b7791f;--bad:#c2362e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:980px;margin:auto;padding:0 18px 40px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:800;font-size:1.25rem}
+button,select{font:inherit;cursor:pointer}
+.btn{border:0;background:var(--brand);color:#fff;padding:.6em 1.1em;border-radius:12px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{padding:.4em .8em;font-size:.9rem}
+
+/* Best match banner */
+.pick{background:var(--ink);color:#fff;border-radius:20px;padding:22px;margin-bottom:22px}
+.pick h1{margin:6px 0 8px;font-size:clamp(1.6rem,6vw,2.6rem)}
+.pick .btn{background:#fff;color:var(--ink)}
+
+/* Filters and cards */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+select{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:.55em .75em}
+.filters select{flex:1 1 150px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0}
+.meta{color:var(--muted);font-size:.9rem}
+.status{font-weight:800;font-size:1.3rem}
+.ok{color:var(--ok)} .mid{color:var(--mid)} .bad{color:var(--bad)} .none{color:var(--muted)}
+
+/* Seat dots: filled dots use the status colour */
+.seats{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.seats i{aspect-ratio:1;border-radius:5px;background:var(--line)}
+.seats i.f{background:currentColor}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{border:1px solid var(--line);border-radius:99px;padding:0 .65em;font-size:.8rem;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;gap:8px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:36px 10px;border:2px dashed var(--line);border-radius:16px}
+
+/* Popup form */
+dialog{border:0;border-radius:18px;padding:22px;width:min(420px,calc(100% - 28px))}
+dialog::backdrop{background:rgba(8,10,30,.6)}
+dialog h2{margin:0}
+dialog select{width:100%}
+label{display:block;font-weight:700;font-size:.92rem;margin:14px 0 6px}
+.err{color:var(--bad);font-size:.9rem;min-height:1.2em}
+.acts{display:flex;justify-content:flex-end;gap:8px}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.6em 1.1em;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+
+/* Header, login, photos */
+.hdr-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+input{font:inherit;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:.55em .75em}
+.center{text-align:center;margin:14px 0 0} .center a{color:var(--brand)}
+.card .photo{width:calc(100% + 32px);margin:-16px -16px 4px;height:150px;object-fit:cover;border-radius:14px 14px 0 0;background:var(--line)}
+.card .nophoto{height:150px;margin:-16px -16px 4px;border-radius:14px 14px 0 0;background:linear-gradient(135deg,#c9cdf5,#e6e8fb)}
+.pick.hasphoto{background-size:cover;background-position:center}
+.loading{grid-column:1/-1;text-align:center;color:var(--muted);padding:36px 10px}
+
+/* Community submissions */
+#spaceDlg{width:min(540px,calc(100% - 28px));max-height:90vh;overflow:auto}
+textarea{font:inherit;width:100%;border:1.5px solid var(--line);border-radius:10px;padding:.6em;resize:vertical}
+.check{display:flex;gap:9px;align-items:center}.check input{width:auto}
+.filters input{flex:2 1 190px}.card .links{display:flex;gap:12px;flex-wrap:wrap}
+.card .links a{color:var(--brand);font-size:.9rem;font-weight:650}
+.card .description{font-size:.9rem;color:var(--muted);margin:0}
+.card .photo-count{font-size:.8rem;color:var(--muted)}
+button:disabled{opacity:.6;cursor:wait}
+@media(max-width:650px){header{align-items:flex-start;gap:12px}.hdr-right{gap:5px}.hdr-right .meta{width:100%;overflow-wrap:anywhere}.btn.small{font-size:.8rem}}
+
+.community-actions{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0}.community-actions .btn{font-size:.76rem;padding:.35em .6em}
